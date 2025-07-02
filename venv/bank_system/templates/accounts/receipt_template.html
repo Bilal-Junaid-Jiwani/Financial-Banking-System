@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Receipt</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .receipt-container {
+            width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 30px 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            color: #333;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+
+        .success-header {
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .payment-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .amount {
+            font-size: 26px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #000;
+        }
+
+        table.details {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table.details td {
+            padding: 10px 5px;
+            font-size: 14px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            width: 50%;
+        }
+
+        .value {
+            text-align: right;
+            width: 50%;
+            color: #222;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="success-header">✔ Payment Successful</div>
+
+        <div class="payment-title">Transaction Receipt</div>
+
+        <div class="amount">Rs. {{ txn.amount }}</div>
+
+        <table class="details">
+            <tr>
+                <td class="label">Account Number</td>
+                <td class="value">{{ txn.user.bankaccount.account_number }}</td>
+            </tr>
+            <tr>
+                <td class="label">Payment Date & Time</td>
+                <td class="value">{{ txn.timestamp|date:"d-m-Y, H:i:s" }}</td>
+            </tr>
+            <tr>
+                <td class="label">Transaction Type</td>
+                <td class="value">{{ txn.transaction_type|title }}</td>
+            </tr>
+            <tr>
+                <td class="label">Sender Name</td>
+                <td class="value">{{ txn.user.get_full_name|default:txn.user.username }}</td>
+            </tr>
+            <tr>
+                <td class="label">Transaction Description</td>
+                <td class="value">{{ txn.description }}</td>
+            </tr>
+        </table>
+
+        <div class="footer">
+            Thank you for using our bank. This is a system-generated receipt.
+        </div>
+    </div>
+</body>
+</html>

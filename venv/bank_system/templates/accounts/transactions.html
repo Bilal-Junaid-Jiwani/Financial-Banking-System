@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BankDash - Transactions</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7367F0;
+            --secondary: #82868B;
+            --success: #28C76F;
+            --danger: #EA5455;
+            --warning: #FF9F43;
+            --info: #00CFE8;
+            --dark: #4B4B4B;
+            --light: #F8F8F8;
+        }
+        body {
+            background-color: #F8F8F8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: white;
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+        .nav-link {
+            color: var(--secondary);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: rgba(115,103,240,0.1);
+            color: var(--primary);
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        }
+        .card-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .user-profile {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        .income {
+            background-color: rgba(40,199,111,0.1);
+            color: var(--success);
+        }
+        .expense {
+            background-color: rgba(234,84,85,0.1);
+            color: var(--danger);
+        }
+        .transfer {
+            background-color: rgba(255,159,67,0.1);
+            color: var(--warning);
+        }
+        .badge-income {
+            background-color: var(--success);
+        }
+        .badge-expense {
+            background-color: var(--danger);
+        }
+        .badge-transfer {
+            background-color: var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar p-3">
+        <h4 class="mb-4 text-primary">BankDash.</h4>
+        <ul class="nav flex-column">
+           <li class="nav-item">
+                <a class="nav-link active" href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transaction_history' %}"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'deposit_withdraw' %}"><i class="fas fa-wallet"></i> Withdraw</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transfer' %}"><i class="fas fa-exchange-alt"></i> Transfer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">Transaction History</h3>
+            <div class="d-flex align-items-center">
+                <div class="dropdown ms-3">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="{{ request.user.userprofile.image.url|default:'/media/default.jpg' }}" class="user-profile me-2">
+                        <span>{{ request.user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">End Date</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Transaction Type</label>
+                        <select name="type" class="form-select">
+                            <option value="all" {% if txn_type == 'all' or not txn_type %}selected{% endif %}>All Types</option>
+                            <option value="deposit" {% if txn_type == 'deposit' %}selected{% endif %}>Deposit</option>
+                            <option value="withdraw" {% if txn_type == 'withdraw' %}selected{% endif %}>Withdraw</option>
+                            <option value="transfer" {% if txn_type == 'transfer' %}selected{% endif %}>Transfer</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Transactions Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="card-title mb-0">All Transactions</h5>
+    <div class="d-flex">
+        <form method="get" action="{% url 'transaction_history' %}">
+            <input type="hidden" name="export" value="csv">
+            <input type="hidden" name="start_date" value="{{ start_date }}">
+            <input type="hidden" name="end_date" value="{{ end_date }}">
+            <input type="hidden" name="type" value="{{ txn_type }}">
+            <button type="submit" class="btn btn-sm btn-success">
+                <i class="fas fa-download me-2"></i>Export CSV
+            </button>
+        </form>
+
+        <form method="get" action="{% url 'export_pdf' %}">
+            <input type="hidden" name="start_date" value="{{ start_date }}">
+            <input type="hidden" name="end_date" value="{{ end_date }}">
+            <input type="hidden" name="type" value="{{ txn_type }}">
+            <button type="submit" class="btn btn-sm btn-danger ms-2">
+                <i class="fas fa-file-pdf me-2"></i>Export PDF
+            </button>
+        </form>
+    </div>
+</div>
+
+                
+                {% if transactions %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Description</th>
+                                    <th>Receipt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for txn in transactions %}
+                                <tr>
+                                    <td>{{ txn.timestamp|date:"d M Y - h:i A" }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill 
+                                            {% if txn.transaction_type == 'deposit' %}badge-income
+                                            {% elif txn.transaction_type == 'withdraw' %}badge-expense
+                                            {% else %}badge-transfer{% endif %}">
+                                            {{ txn.transaction_type|title }}
+                                        </span>
+                                    </td>
+                                    <td class="{% if txn.transaction_type == 'deposit' %}text-success{% else %}text-danger{% endif %}">
+                                        {% if txn.transaction_type == 'deposit' %}+{% else %}-{% endif %}Rs. {{ txn.amount }}
+                                    </td>
+                                    <td>{{ txn.description }}</td>
+                                    <td>
+                                       <a href="{% url 'generate_pdf' txn.id %}" class="btn btn-sm btn-outline-primary">
+                                           <i class="fas fa-file-download me-1"></i>Download
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No transactions found</h5>
+                        <p class="text-muted">Your transactions will appear here</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BankDash - Digital Banking Revolution</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7367F0;
+            --secondary: #82868B;
+            --dark: #2B2B2B;
+            --light: #F8F8F8;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #9E95F5 100%);
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40%;
+            height: 100%;
+            background-image: url('https://via.placeholder.com/600x400');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+        }
+        .navbar {
+            padding: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary) !important;
+            font-size: 1.8rem;
+        }
+        .nav-link {
+            color: var(--dark);
+            font-weight: 500;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .btn {
+            transition: 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        .section-title {
+            position: relative;
+            margin-bottom: 50px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary);
+        }
+        .feature-box {
+            padding: 30px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            transition: transform 0.3s;
+        }
+        .feature-box:hover {
+            transform: translateY(-10px);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .stats-item {
+            text-align: center;
+            padding: 20px;
+        }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .stats-label {
+            font-size: 1rem;
+            color: var(--secondary);
+        }
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--primary);
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 30px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            border: 3px solid white;
+        }
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        .footer-links h5 {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .footer-links a {
+            color: #ccc;
+            display: block;
+            margin-bottom: 10px;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">BankDash.</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#story">Our Story</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            </ul>
+            <div class="ms-lg-3 mt-3 mt-lg-0">
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Discover Our Story</h1>
+                <p class="lead mb-5">Our story is one of innovation, security, and convenience, as we've diligently crafted a seamless digital ecosystem for your financial interactions.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'register' %}" class="btn btn-light btn-lg">Open Account</a>
+                    <a href="#about" class="btn btn-outline-light btn-lg">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="stats-item">
+                    <div class="stats-number">2021 - 2025</div>
+                    <div class="stats-label">Timeline</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stats-item">
+                    <div class="stats-number">1,000+</div>
+                    <div class="stats-label">Laboratories</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stats-item">
+                    <div class="stats-number">50+</div>
+                    <div class="stats-label">Towns Card</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="stats-item">
+                    <div class="stats-number">24/7</div>
+                    <div class="stats-label">Online Payment</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <img src="https://via.placeholder.com/600x400" alt="About BankDash" class="img-fluid rounded">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="section-title">Who We Are - A Legacy of Innovation</h2>
+                <p>We are a trailblazing company committed to redefining banking standards. Our journey began with a vision to create innovative solutions that empower individuals and businesses alike.</p>
+                <p>For over a decade, we've tirelessly pursued excellence, driving positive change in the lives of millions. Our legacy is built on a foundation of cutting-edge technology, unwavering integrity, and a dedication to customer-centricity.</p>
+                <div class="mt-4">
+                    <a href="#" class="btn btn-primary">Learn More About Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Commitment Section -->
+<section class="py-5 bg-light" id="features">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="section-title">Our Commitment, Your Advantage</h2>
+                <p class="lead mb-5">Revolutionizing your banking experience with a foundation of integrity and cutting-edge capabilities.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-box text-center">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h4>Security First</h4>
+                    <p>Bank-level encryption and multi-factor authentication to protect your assets.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-box text-center">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h4>Lightning Fast</h4>
+                    <p>Instant transfers and real-time notifications for all your transactions.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-box text-center">
+                    <div class="feature-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <h4>Customer Focus</h4>
+                    <p>24/7 support with real humans ready to assist you anytime.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section id="story" class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center">Our Journey</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>2021 - Foundation</h4>
+                        <p>BankDash was founded with a vision to revolutionize digital banking, starting with our first office in San Francisco.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2022 - Expansion</h4>
+                        <p>Launched our mobile app and expanded to 10 new markets across North America.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2023 - Innovation</h4>
+                        <p>Introduced AI-powered financial insights and automated savings tools.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2024 - Recognition</h4>
+                        <p>Awarded "Best Digital Bank" by Financial Times for our customer experience.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2025 - Future</h4>
+                        <p>Expanding globally with new features focused on crypto and blockchain integration.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Experience the Future of Banking?</h2>
+        <p class="lead mb-5">Join millions of satisfied customers who trust BankDash with their financial needs.</p>
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg me-3">Open Free Account</a>
+        <a href="#contact" class="btn btn-outline-light btn-lg">Contact Sales</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-5 mb-lg-0">
+                <h3 class="text-white mb-4">BankDash.</h3>
+                <p>Redefining banking for the digital age with security, innovation, and customer-centric solutions.</p>
+                <div class="mt-4">
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
+                <div class="footer-links">
+                    <h5>Company</h5>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Press</a>
+                    <a href="#">Blog</a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
+                <div class="footer-links">
+                    <h5>Products</h5>
+                    <a href="#">Personal</a>
+                    <a href="#">Business</a>
+                    <a href="#">Investments</a>
+                    <a href="#">Credit Cards</a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-5 mb-md-0">
+                <div class="footer-links">
+                    <h5>Resources</h5>
+                    <a href="#">Help Center</a>
+                    <a href="#">Security</a>
+                    <a href="#">Legal</a>
+                    <a href="#">Privacy</a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <div class="footer-links">
+                    <h5>Contact</h5>
+                    <a href="#">support@bankdash.com</a>
+                    <a href="#">+1 (800) 123-4567</a>
+                    <a href="#">San Francisco, CA</a>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-5 mb-4" style="border-color: rgba(255,255,255,0.1);">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0">© 2025 BankDash. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <a href="#" class="text-white me-3">Terms</a>
+                <a href="#" class="text-white me-3">Privacy</a>
+                <a href="#" class="text-white">Security</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

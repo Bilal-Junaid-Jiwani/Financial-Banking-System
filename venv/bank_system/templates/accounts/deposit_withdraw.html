@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BankDash - Deposit/Withdraw</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7367F0;
+            --secondary: #82868B;
+            --success: #28C76F;
+            --danger: #EA5455;
+            --dark: #4B4B4B;
+            --light: #F8F8F8;
+        }
+        body {
+            background-color: #F8F8F8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: white;
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+        .nav-link {
+            color: var(--secondary);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: rgba(115,103,240,0.1);
+            color: var(--primary);
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        }
+        .account-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #9E95F5 100%);
+            border-radius: 15px;
+            color: white;
+            padding: 20px;
+        }
+        .action-card {
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+        .deposit-card {
+            border-top: 4px solid var(--success);
+        }
+        .withdraw-card {
+            border-top: 4px solid var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar p-3">
+        <h4 class="mb-4 text-primary">BankDash.</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transaction_history' %}"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'deposit_withdraw' %}"><i class="fas fa-wallet"></i> Withdraw</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transfer' %}"><i class="fas fa-exchange-alt"></i> Transfer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">Bank Actions</h3>
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="{{ request.user.userprofile.image.url|default:'/media/default.jpg' }}" class="rounded-circle me-2" width="40" height="40">
+                        <span>{{ request.user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="account-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-1">Account Number</p>
+                            <h4>{{ account.account_number }}</h4>
+                        </div>
+                        <div class="text-end">
+                            <p class="mb-1">Current Balance</p>
+                            <h3>Rs. {{ account.balance }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card action-card deposit-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div>
+                                <h5 class="card-title text-success">Deposit Money</h5>
+                                <p class="text-muted">Add funds to your account</p>
+                            </div>
+                            <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-arrow-down text-success fs-4"></i>
+                            </div>
+                        </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label">Amount (Rs.)</label>
+                                <input type="number" step="0.01" class="form-control" name="amount" required>
+                            </div>
+                            <button type="submit" name="action" value="deposit" class="btn btn-success w-100">Deposit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card action-card withdraw-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div>
+                                <h5 class="card-title text-danger">Withdraw Money</h5>
+                                <p class="text-muted">Withdraw funds from your account</p>
+                            </div>
+                            <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-arrow-up text-danger fs-4"></i>
+                            </div>
+                        </div>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label">Amount (Rs.)</label>
+                                <input type="number" step="0.01" class="form-control" name="amount" required>
+                            </div>
+                            <button type="submit" name="action" value="withdraw" class="btn btn-danger w-100">Withdraw</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

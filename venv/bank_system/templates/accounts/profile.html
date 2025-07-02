@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BankDash - Settings</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7367F0;
+            --secondary: #82868B;
+            --dark: #4B4B4B;
+            --light: #F8F8F8;
+        }
+        body {
+            background-color: #F8F8F8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: white;
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+        .nav-link {
+            color: var(--secondary);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: rgba(115,103,240,0.1);
+            color: var(--primary);
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        }
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .profile-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .profile-label {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        .profile-value {
+            font-weight: 500;
+            color: var(--dark);
+        }
+        .edit-btn {
+            color: var(--primary);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar p-3">
+        <h4 class="mb-4 text-primary">BankDash.</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transaction_history' %}"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'deposit_withdraw' %}"><i class="fas fa-wallet"></i> Withdraw</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transfer' %}"><i class="fas fa-exchange-alt"></i> Transfer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">Settings</h3>
+            <div class="d-flex align-items-center">
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="{{ request.user.userprofile.image.url|default:'/media/default.jpg' }}" class="rounded-circle me-2" width="40" height="40">
+                        <span>{{ request.user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Settings</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item mb-2">
+                                <a class="nav-link active" href="#"><i class="fas fa-user-edit me-2"></i> Edit Profile</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="profile-section">
+                    <div class="text-center mb-4">
+                        <img src="{{ request.user.userprofile.image.url|default:'/media/default.jpg' }}" class="profile-img mb-3">
+                        <h4>{{ user.get_full_name|default:user.username }}</h4>
+                        <p class="text-muted">{{ user.email }}</p>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="profile-label">Your Name</label>
+                                    <div class="d-flex align-items-center">
+                                        <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}" placeholder="First Name">
+                                        <input type="text" class="form-control ms-2" name="last_name" value="{{ user.last_name }}" placeholder="Last Name">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="profile-label">Email</label>
+                                    <input type="email" class="form-control" name="email" value="{{ user.email }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="profile-label">Use Name</label>
+                                    <input type="text" class="form-control" name="username" value="{{ user.username }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="profile-label">Password</label>
+                                    <input type="password" class="form-control" name="password" placeholder="••••••••">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="profile-label">Date of Birth</label>
+                                    <input type="date" class="form-control" name="dob" value="{{ profile.dob|date:'Y-m-d' }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="profile-label">Permanent Address</label>
+                                    <input type="text" class="form-control" name="permanent_address" value="{{ profile.permanent_address }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="profile-label">Present Address</label>
+                                    <input type="text" class="form-control" name="present_address" value="{{ profile.present_address }}">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="profile-label">City</label>
+                                            <input type="text" class="form-control" name="city" value="{{ profile.city }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="profile-label">Country</label>
+                                            <input type="text" class="form-control" name="country" value="{{ profile.country }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="profile-label">Postal Code</label>
+                                    <input type="text" class="form-control" name="postal_code" value="{{ profile.postal_code }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="profile-label">Profile Picture</label>
+                                    <input type="file" class="form-control" name="profile_image">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

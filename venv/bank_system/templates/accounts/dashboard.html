@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BankDash - Overview</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #7367F0;
+            --secondary: #82868B;
+            --success: #28C76F;
+            --danger: #EA5455;
+            --warning: #FF9F43;
+            --info: #00CFE8;
+            --dark: #4B4B4B;
+            --light: #F8F8F8;
+        }
+        body {
+            background-color: #F8F8F8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+            background: white;
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+        }
+        .nav-link {
+            color: var(--secondary);
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: rgba(115,103,240,0.1);
+            color: var(--primary);
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+        }
+        .card-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .user-profile {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .credit-card {
+            background: linear-gradient(135deg, var(--primary) 0%, #9E95F5 100%);
+            border-radius: 15px;
+            color: white;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-number {
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+        .card-chip {
+            width: 50px;
+            margin-right: 15px;
+        }
+        .card-logo {
+            width: 60px;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        .income {
+            background-color: rgba(40,199,111,0.1);
+            color: var(--success);
+        }
+        .expense {
+            background-color: rgba(234,84,85,0.1);
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar p-3">
+        <h4 class="mb-4 text-primary">BankDash.</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transaction_history' %}"><i class="fas fa-exchange-alt"></i> Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'deposit_withdraw' %}"><i class="fas fa-wallet"></i> Withdraw</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'transfer' %}"><i class="fas fa-exchange-alt"></i> Transfer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">Overview</h3>
+            <div class="d-flex align-items-center">
+                <div class="dropdown ms-3">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="{{ request.user.userprofile.image.url|default:'/media/default.jpg' }}" class="user-profile me-2">
+                        <span>{{ request.user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards Section -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="credit-card">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="mb-1">Balance</p>
+                            <h3 class="mb-3">Rs. {{ account.balance }}</h3>
+                        </div>
+                        <img src="https://www.mastercard.com/content/dam/public/brandcenter/assets/images/logos/mclogo-for-footer.svg" class="card-logo">
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://cdn-icons-png.freepik.com/256/14997/14997486.png?semt=ais_hybrid" class="card-chip">
+                        <div>
+                            <p class="mb-0">Account Number</p>
+                            <h6 class="mb-0">{{ account.account_number }}</h6>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="mb-1">Account Holder</p>
+                            <h6 class="mb-0">{{ request.user.get_full_name|default:request.user.username }}</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-arrow-down text-primary fs-4"></i>
+                        </div>
+                        <h5 class="card-title">Deposit</h5>
+                        <p class="text-muted">Add money to your account</p>
+                        <a href="{% url 'deposit_withdraw' %}" class="btn btn-sm btn-primary">Deposit</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-3 d-inline-block mb-3">
+                            <i class="fas fa-arrow-up text-danger fs-4"></i>
+                        </div>
+                        <h5 class="card-title">Withdraw</h5>
+                        <p class="text-muted">Take money from your account</p>
+                        <a href="{% url 'deposit_withdraw' %}" class="btn btn-sm btn-danger">Withdraw</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="card-title mb-0">Recent Transactions</h5>
+                            <a href="{% url 'transaction_history' %}" class="btn btn-sm btn-outline-primary">See All</a>
+                        </div>
+                        {% if transactions %}
+                            {% for txn in transactions %}
+                            <div class="transaction-item">
+                                <div class="transaction-icon {% if txn.transaction_type == 'deposit' %}income{% else %}expense{% endif %}">
+                                    <i class="fas fa-{% if txn.transaction_type == 'deposit' %}arrow-down{% else %}arrow-up{% endif %}"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0">{{ txn.description }}</h6>
+                                    <small class="text-muted">{{ txn.timestamp|date:"d M Y - h:i A" }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <h6 class="mb-0 {% if txn.transaction_type == 'deposit' %}text-success{% else %}text-danger{% endif %}">
+                                        {% if txn.transaction_type == 'deposit' %}+{% else %}-{% endif %}Rs. {{ txn.amount }}
+                                    </h6>
+                                    <small class="text-muted">{{ txn.transaction_type|title }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted text-center py-4">No transactions found</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Quick Transfer</h5>
+                        <form method="post" action="{% url 'transfer' %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label">Receiver Account</label>
+                                <input type="text" name="receiver_account" class="form-control" placeholder="Enter account number">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Amount</label>
+                                <input type="number" name="amount" class="form-control" placeholder="Rs. 0.00">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Transfer Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
