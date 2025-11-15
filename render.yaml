@@ -2,7 +2,7 @@ services:
   - type: web
     name: financial-banking-system
     env: python
-    roootDir: venv_old/bank_system
+    rootDir: venv_old/bank_system
     buildCommand: ./build.sh
     startCommand: gunicorn bank_system.wsgi:application
     healthCheckPath: /
