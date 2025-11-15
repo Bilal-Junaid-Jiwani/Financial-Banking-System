@@ -1,24 +1,28 @@
+# Top-level 'databases' key for managed databases
+databases:
+    - name: financial_banking_db
+      plan: free
+
+# 'services' key for web services, workers, etc.
 services:
-  - type: web
-    name: financial-banking-system
-    env: python
-    rootDir: venv_old/bank_system
-    buildCommand: ./build.sh
-    startCommand: gunicorn bank_system.wsgi:application
-    healthCheckPath: /
-    envVars:
-      - key: SECRET_KEY
-        generateValue: true
-      - key: WEB_CONCURRENCY
-        value: 4
-      - key: DEBUG
-        value: False
-      - key: DISABLE_COLLECTSTATIC
-        value: 0
-      - key: DATABASE_URL
-        fromDatabase:
-          name: financial_banking_db
-          property: connectionString
-  - type: database
-    name: financial_banking_db
-    plan: free
+    - type: web
+      name: financial-banking-system
+      env: python
+      rootDir: venv_old/bank_system
+      buildCommand: ./build.sh
+      startCommand: gunicorn bank_system.wsgi:application                                                                                                                ▄
+      healthCheckPath: / 
+      envVars:
+        - key: SECRET_KEY
+          generateValue: true
+        - key: WEB_CONCURRENCY
+          value: 4
+        - key: DEBUG
+          value: False
+        - key: DISABLE_COLLECTSTATIC
+          value: 0
+        - key: DATABASE_URL
+          fromDatabase:
+            name: financial_banking_db
+            property: connectionString
+      
