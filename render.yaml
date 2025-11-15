@@ -21,5 +21,4 @@ services:
           property: connectionString
   - type: pserv
     name: financial_banking_db
-    env: postgres
     plan: free
