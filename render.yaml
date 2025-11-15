@@ -19,6 +19,6 @@ services:
         fromDatabase:
           name: financial_banking_db
           property: connectionString
-  - type: pserv
+  - type: database
     name: financial_banking_db
     plan: free
